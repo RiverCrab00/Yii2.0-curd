@@ -1,0 +1,40 @@
+function confirmbox(msg, callback) {
+    if ($("#modal-1").length <= 0)
+    {
+        $('.page-body').append('<div class="my-modal" id="modalConfirm">'+
+            '<div class="modal" id="modal-1" style="display:block">'+
+                '<div class="modal-dialog">'+
+                    '<div class="modal-content">'+
+                        '<div class="modal-header modal-header-primary">'+
+                            '<button type="button" class="close" onclick="fadehide()" data-dismiss="modal"><span aria-hidden="true">×</span></button>'+
+                            '<h4 class="modal-title">提示</h4>'+
+                        '</div>'+
+                        '<div class="modal-body">'+
+                            '<p class="confirmMsg"></p>'+
+                        '</div>'+
+                        '<div class="modal-footer">'+
+                            '<button type="button" class="btn btn-warning btn-ok"> 确定 </button>'+
+                            '<button type="button" class="btn btn-white" data dismiss="modal" onclick="fadehide()"> 取消 </button>'+
+                        '</div>'+
+                    '</div>'+
+                '</div>'+
+            '</div>'+
+        '</div>' +
+        '<div class="modal-backdrop fade in" id="delfade"></div>');
+    }
+    
+    $("#modal-1 .confirmMsg").html(msg);
+    $("#modal-1 .btn-ok").one("click", function(){
+        callback();
+        fadehide();
+    });
+    $("#modal-1").show();
+    $("#delfade").show();
+}
+function fadehide()
+{
+    $("#modal-1").remove();
+    $("#delfade").remove();
+}
+    
+

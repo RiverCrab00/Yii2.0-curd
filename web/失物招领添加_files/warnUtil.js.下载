@@ -1,0 +1,47 @@
+var warnUtil={
+	setWrong:function(obj,msg)
+    {
+        var form_group = $(obj).closest('.form-group');
+        if (form_group.size())
+        {
+            var span_parent = form_group.children('div:first');
+            form_group.addClass('has-error');
+            if( span_parent.children('span').length > 0)
+                span_parent.children('span').html(msg);
+            else
+                span_parent.append('<span class="help-block">'+msg+'</span>');       
+        } 
+        else
+        {
+            var prt = $(obj).parent();
+            if( prt.children('span').length > 0)
+                prt.children('span').html(msg);
+            else
+                prt.append('<span class="help-block" style="color:#cc3f44">'+msg+'</span>');       
+        }
+    },
+    setRight:function(obj)
+    {
+        var form_group = $(obj).closest('.form-group');
+        if (form_group.size())
+        {
+            var span_parent = form_group.children('div:first');
+            form_group.removeClass('has-error');
+            span_parent.children('span').html('');
+        }
+        else
+        {
+            var prt = $(obj).parent();
+            prt.removeClass('has-error');
+            prt.children('span').html('');
+        }
+    },
+    setInit:function(obj)
+    {
+        var form_group = $(obj).closest('.form-group');
+        var span_parent = form_group.children('div:first');
+        form_group.removeClass('has-error');
+        //form_group.removeClass('has-success');
+        span_parent.children('span').html('');
+    }
+}

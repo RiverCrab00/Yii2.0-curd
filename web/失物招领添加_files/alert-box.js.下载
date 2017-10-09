@@ -1,0 +1,21 @@
+function alertbox(msg, type, timeout,div) {
+    timeout = timeout ? timeout : 3000;
+    type = type ? type : 1;
+    div  = div ? div : ".row";
+    var ictype = ['gtl_ico_succ', 'gtl_ico_succ', 'gtl_ico_fail', 'gtl_ico_hits', 'gtl_ico_clear'][type];
+    if($("#alert-box").length>0)
+    {
+        $(".zeng_msgbox_layer_wrap").remove();
+    }
+    var loadGif  = '';
+    if(type == 4){
+        loadGif = '<img src="/bootstrap/images/loading.gif"/>';
+    }
+    $('body').append('<div class="zeng_msgbox_layer_wrap" id="alert-box" style=" top:280px; display:block;z-index: 10000; "> <span class="zeng_msgbox_layer" id="mode_tips_v2"> <span class="'+ictype+'"></span> '+loadGif+msg+' <span class="gtl_end"> </span> </span> </div>');
+    setTimeout(boxhide, timeout);
+}
+function boxhide()
+{   
+    $(".zeng_msgbox_layer_wrap").remove();
+}
+

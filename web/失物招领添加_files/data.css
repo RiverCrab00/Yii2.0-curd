@@ -1,0 +1,131 @@
+table.sex-list td span.ratio {
+    color: #636464;
+    font-size: 22px;
+}
+table.sex-list td span {
+    display: inline-block;
+}
+table.sex-list td span.male {
+    background-image: url("../images/data/human.png");
+    background-position: left -113px;
+    background-repeat: no-repeat;
+    height: 49px;
+    padding-left: 5px;
+    width: 27px;
+}
+div.visitor-attr table.sex-list td span.female {
+    background-image: url("../images/data/human.png");
+    background-position: left -241px;
+    background-repeat: no-repeat;
+    height: 49px;
+    padding-left: 5px;
+    width: 27px;
+}
+div.table-title {
+    height: 50px;
+    line-height: 50px;
+    padding-left: 28px;
+}
+
+div.table-title span.text {
+    color: #999;
+}
+
+.row-fluid [class*="span"]:first-child {
+    margin-left: 0;
+}
+.row-fluid [class*="span"] {
+    box-sizing: border-box;
+    display: block;
+    float: left;
+    margin-left: 2.5641%;
+    min-height: 30px;
+    width: 100%;
+}
+div.visitor-attr table.sex-list td {
+    text-align: left;
+}
+
+div.visitor-attr table.sex-list {
+    border-collapse: collapse;
+    font-size: 12px;
+}
+
+div.visitor-attr table.sex-list {
+    border-collapse: collapse;
+    font-size: 12px;
+    height: 181px;
+    margin-top: 50px;
+    width: 100%;
+}
+.row-fluid .span6 {
+    width: 48.7179%;
+}
+
+div.visitor-attr table.sex-list td span.male-shadow {
+    background-image: url("../images/data/human.png");
+    background-position: left -172px;
+    background-repeat: no-repeat;
+}
+
+div.visitor-attr table.sex-list td span.female-shadow {
+    background-image: url("../images/data/human.png");
+    background-position: left -310px;
+    background-repeat: no-repeat;
+}
+.regionMap {
+    display: inline;
+    float: left;
+}
+.MapColor {
+    background: url("../images/data/map_color.png") repeat scroll center 0 rgba(0, 0, 0, 0);
+    display: none;
+    float: left;
+    height: 180px;
+    margin: 80px 0 0 10px;
+    width: 30px;
+}
+.row-fluid::before, .row-fluid::after {
+    content: "";
+    display: table;
+    line-height: 0;
+}
+.row-fluid::after {
+    clear: both;
+}
+.row-fluid {
+    width: 100%;
+}
+.mapInfo i {
+    background: none repeat scroll 0 0 #aeaeae;
+    border-radius: 15px;
+    color: #fff;
+    display: inline-block;
+    font-family: Tahoma;
+    font-size: 11px;
+    font-style: normal;
+    height: 15px;
+    line-height: 15px;
+    margin-top: 5px;
+    text-align: center;
+    width: 15px;
+}
+.mapInfo i.active {
+    background: none repeat scroll 0 0 #e27f21;
+}
+.mapInfo span {
+    padding: 0 5px 0 3px;
+}
+.mapInfo b {
+    color: #2770b5;
+    font-weight: normal;
+}
+
+.mapTip{display:none; position:absolute; padding:8px; background:#fff; border: 1px solid #aaa; -moz-border-radius: 4px; -webkit-border-radius: 4px; border-radius: 4px; 
+-webkit-box-shadow: 0 5px 10px rgba(0,0,0,.3);
+box-shadow: 0 5px 10px rgba(0,0,0,.3);
+	font-size:12px; font-family:Tahoma; color:#333;z-index:99999; }
+.mapTip .arrow,
+.mapTip .arrowMask{ position: absolute; width: 0; height: 0; border-color: transparent; border-style: solid;}
+.mapTip .arrow{ bottom: -7px; left: 50%; margin-left: -7px; border-width: 7px; border-top-color: #999; border-top-color: rgba(0,0,0,.25); border-bottom-width: 0;}
+.mapTip .arrowMask{bottom: 1px; border-width: 6px; margin-left: -6px; border-top-color: #fff; border-bottom-width: 0;}

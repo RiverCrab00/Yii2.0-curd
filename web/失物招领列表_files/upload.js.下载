@@ -1,0 +1,336 @@
+var uploadUtil ={
+    flashSwf:'/widgets/plupload/js/Moxie.swf',
+    silverlightXapUrl:'/widgets/plupload/js/Moxie.xap',
+    uploaders:[],
+    option:{
+        debug : true,
+        url : '/api/upload/index',
+        selectObj : 'selectObj',
+        uploadObj : 'uploadObj',
+        runtimes : 'flash,html5,html4',
+        uniqueNames : true,
+        fileDataName : 'upfile',
+        maxFileSize : '200mb',
+        autoUpload:false,
+        showQueue:true,
+        progress:null,
+        multiSelection : false,
+        customQueue:null,
+        filters : [
+                    {title : "Image files", extensions : "bmp,png,jpeg,jpg,gif"}
+                 //   {title : "Document files", extensions : "doc,docx,ppt,pptx,txt,zip,rar,csv"},
+                //  {title : "Media files", extensions : "mp3,mp4,rmvb,avi"}
+        ],
+        multipartParams : {"category":"image"},
+        onUploadComplete : null,
+        onFilesAdded : null,
+        onError : null,
+        resize:{},
+    },
+    init:function(option){
+        options = new Object();
+        var keys = [
+            "autoUpload", "chunksize", "customQueue", "debug", "fileDataName", "filters",
+            "maxFileSize", "multiSelection","multipartParams", "onError", "onFilesAdded", "onUploadComplete",
+            "progress", "runtimes", "selectObj", "showQueue", "uniqueNames", "uploadObj", "url", "resize"
+        ];
+        var k;
+        for (var i in keys) {
+            k = keys[i];
+            options[k] = typeof option[k] == "undefined" ? this.option[k] : option[k];
+        }
+
+        uploadUtil.create(options);
+    
+    },
+    create:function(option)
+    {
+        new plupload.Uploader({
+            // 通用设置
+            runtimes : 'html5,html4,flash',
+            browse_button : option.selectObj, // you can pass in id...
+            url : option.url,
+            chunk_size : option.chunkSize,//分片大小
+            unique_names : option.uniqueNames,
+            file_data_name : option.fileDataName,
+            multipart_params : option.multipartParams,
+            multi_selection : option.multiSelection,
+            // Resize images on client-side if we can
+            //本地修改图片大小
+            //resize : { width : 320, height : 240, quality : 90 },
+            resize: option.resize,
+            filters : {
+                max_file_size : option.maxFileSize,
+                //过滤的文件类型
+                mime_types: option.filters,
+            },
+     
+            flashSwf : uploadUtil.flashSwf,
+            silverlightXapUrl : uploadUtil.silverlightXapUrl ,
+             
+            // PreInit events, bound before the internal events
+            preinit : {
+                Init: function(up, info) {
+                    uploadUtil.log('[Init]', 'Info:', info, 'Features:', up.features);
+                },
+                //文件上传后的处理
+                UploadFile: function(up, file) {
+                    //log('[UploadFile]', file);
+     
+                    // You can override settings before the file is uploaded
+                    // up.setOption('url', 'upload.php?id=' + file.id);
+                    // up.setOption('multipart_params', {param1 : 'value1', param2 : 'value2'});
+                }
+            },
+     
+            // Post init events, bound after the internal events
+            init : {
+                PostInit: function(up) {
+                    // Called after initialization is finished and internal event handlers bound
+                   uploadUtil.log('[PostInit]');
+                   if(option.autoUpload == false)
+                   {
+                         $('#'+option.uploadObj).click(function() {
+                            up.start();
+                            return false;
+                        });
+                   }
+                  
+                },
+
+                Browse: function(up) {
+                    // Called when file picker is clicked
+                    uploadUtil.log('[Browse]');
+                },
+
+                Refresh: function(up) {
+                    // Called when the position or dimensions of the picker change
+                    uploadUtil.log('[Refresh]');
+                },
+     
+                StateChanged: function(up) {
+                    // Called when the state of the queue is changed
+                    uploadUtil.log('[StateChanged]', up.state == plupload.STARTED ? "STARTED" : "STOPPED");
+                },
+     
+                QueueChanged: function(up) {
+                    // Called when queue is changed by adding or removing files
+                    uploadUtil.log('[QueueChanged]');
+                },
+
+                OptionChanged: function(up, name, value, oldValue) {
+                    // Called when one of the configuration options is changed
+                    uploadUtil.log('[OptionChanged]', 'Option Name: ', name, 'Value: ', value, 'Old Value: ', oldValue);
+                },
+
+                BeforeUpload: function(up, file) {
+                    if(option.progress != null ) option.progress();
+                    if(option.showQueue)
+                    {
+                        uploadUtil.queue(0, true, option.customQueue);
+                    }
+                    // Called right before the upload for a given file starts, can be used to cancel it if required
+                    uploadUtil.log('[BeforeUpload]', 'File: ', file);
+                },
+     
+                UploadProgress: function(up, file) {
+                    // Called while file is being uploaded
+                    if (option.showQueue)
+                    {
+                        if (up.total.percent == 100)
+                        {
+                            uploadUtil.queue(up.total.percent, false, option.customQueue);
+                        }
+                        else
+                        {
+                            uploadUtil.queue(up.total.percent, true, option.customQueue);
+                        }
+                        
+                    }
+                    uploadUtil.log('[UploadProgress]', 'File:', file, "Total:", up.total);
+                },
+
+                FileFiltered: function(up, file) {
+                    // Called when file successfully files all the filters
+                    uploadUtil.log('[FileFiltered]', 'File:', file);
+                },
+     
+                FilesAdded: function(up, files) {
+                    if(option.onFilesAdded != null ) option.onFilesAdded(files);
+                    if(option.autoUpload == true)
+                    {
+                        up.start();
+                    }
+                    // Called when files are added to queue
+                    uploadUtil.log('[FilesAdded]');
+     
+                    plupload.each(files, function(file) {
+                        uploadUtil.log('  File:', file);
+                    });
+                },
+     
+                FilesRemoved: function(up, files) {
+                    // Called when files are removed from queue
+                    uploadUtil.log('[FilesRemoved]');
+     
+                    up.each(files, function(file) {
+                        uploadUtil.log('  File:', file);
+                    });
+                },
+     
+                FileUploaded: function(up, file, info) {
+                    // Called when file has finished uploading
+                    if(option.onUploadComplete != null ) option.onUploadComplete(info.response);
+                    uploadUtil.log('[FileUploaded] File:', file, "Info:", info);
+                },
+     
+                ChunkUploaded: function(up, file, info) {
+                    // Called when file chunk has finished uploading
+                    uploadUtil.log('[ChunkUploaded] File:', file, "Info:", info);
+                },
+
+                UploadComplete: function(up, files,info) {
+                    // Called when all files are either uploaded or failed
+                    uploadUtil.log('[UploadComplete]');
+                },
+
+                Destroy: function(up) {
+                    // Called when uploader is destroyed
+                    uploadUtil.log('[Destroy] ');
+                },
+     
+                Error: function(up, args) {
+                    // Called when error occurs
+                    if(option.onError != null )
+                    {
+                        option.onError(args);
+                    }
+                        
+                    else
+                    {
+                        if (typeof alertbox == "undefined") {
+                            func = alert;
+                        }
+                        else
+                        {
+                            func = alertbox;
+                        }
+                        switch(args.code)
+                        {
+                        case -600:
+                            func('文件过大，请重新上传', 2, 2000);
+                            break;
+                        case -601:
+                            func('文件类型错误，请重新上传', 2, 2000);
+                            break;
+                        default:
+                            func(args.message, 2, 2000);
+                            break;
+                        }
+                        
+                    }
+                    uploadUtil.log('[Error] ', args);
+                }
+            }
+        }).init();
+    },
+    queue:function(progress, show, customQueue)
+    {
+        if (typeof customQueue == "function") {
+            customQueue(progress, show);
+        }
+        else
+        {
+            this.defaultQueue(progress, show);
+        }
+    },
+    defaultQueue:function(progress, show)
+    {
+        if(show)
+        {
+            if($('#queue').length<=0)
+            {
+                var htmlQueue ='<div aria-hidden="false" class="modal fade" id="queue">' +
+                    '<div class="modal-dialog" style="padding-top: 1px;">'+
+                        '<div class="modal-content" style="width: 300px; background-color: rgb(239, 239, 239);margin: 50px auto;">'+
+                            '<div class="modal-body" style="text-align: center;">'+
+                                '<div class="row">'+
+                                    '<div class="col-md-12">'+
+                                        '<div class="progress progress-striped">'+
+                                            '<div id="up_pro" class="progress-bar progress-bar-warning" role="progressbar" aria-valuenow="" aria-valuemin="0" aria-valuemax="100" style="width: 0%">'+
+                                            '</div>'+
+                                        '</div>'+
+                                    '</div>'+
+                                '</div>'+
+                                '<label style="font-size: 14px;">已上传：<span id="up_pro_show" style="color: rgb(141, 198, 63);'+
+'font-weight: bold;"></span></label>'+
+                            '</div>'+
+                        '</div>'+ 
+                   '</div>'+
+                '</div>';
+                $('body').append(htmlQueue);
+            }
+            $('#queue').modal('show', {backdrop: 'static'});
+            $('#up_pro').css('width',progress+'%');
+            $('#up_pro_show').html(progress+'%');
+
+        }else{
+          $('#up_pro').css('width','100%');
+          $('#up_pro_show').html('100%');
+          setTimeout(function(){$('#queue').modal('hide');}, 500 ); 
+        }
+    },
+    log:function() {
+        if(uploadUtil.option.debug == false)
+        {
+            return;
+        }
+        var str = "";
+        if( $('#console').length <= 0 )
+        {
+            $('.main-footer').before('<pre id="console"></pre>');
+        }
+        plupload.each(arguments, function(arg) {
+            var row = "";
+ 
+            if (typeof(arg) != "string") {
+                plupload.each(arg, function(value, key) {
+                    // Convert items in File objects to human readable form
+                    if (arg instanceof plupload.File) {
+                        // Convert status to human readable
+                        switch (value) {
+                            case plupload.QUEUED:
+                                value = 'QUEUED';
+                                break;
+ 
+                            case plupload.UPLOADING:
+                                value = 'UPLOADING';
+                                break;
+ 
+                            case plupload.FAILED:
+                                value = 'FAILED';
+                                break;
+ 
+                            case plupload.DONE:
+                                value = 'DONE';
+                                break;
+                        }
+                    }
+ 
+                    if (typeof(value) != "function") {
+                        row += (row ? ', ' : '') + key + '=' + value;
+                    }
+                });
+ 
+                str += row + " ";
+            } else {
+                str += arg + " ";
+            }
+        });
+ 
+        var log = $('console');
+        $('#console').html($('#console').html() + str + "\n");
+    }
+
+
+}

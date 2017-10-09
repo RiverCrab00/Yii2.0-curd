@@ -1,0 +1,58 @@
+﻿#u67 {
+  position:absolute;
+  visibility: hidden;
+  top:-100px;
+  width:259px;
+  z-index: 99999;
+}
+#u67_state0 {
+  position:relative;
+  background-image:none;
+}
+#u67_state0_content {
+  position:absolute;
+  width:1px;
+  height:1px;
+}
+#u68 {
+  position:absolute; 
+  width:900px;
+  word-wrap:break-word;
+}
+#u68_img {
+  position:absolute;
+  width:900px;
+  height:100%;
+}
+#u70 {
+  position:absolute;
+  
+  top:11px;
+  width:40px;
+  height:40px;
+  font-size:28px;
+  color:#FFFFFF;
+  word-wrap:break-word;
+}
+#u70_img {
+  position:absolute;
+  left:850px;
+  top:10px;
+  width:40px;
+  height:40px;
+}
+#u72 {
+  position:absolute;
+  word-wrap:break-word;
+  left:60px;
+  top:56px;
+  width:784px;
+}
+#u72_img {
+  position:absolute;
+  width:784px;
+}
+.my-modal p {
+    text-align: center;
+    font-size: 16px;
+}

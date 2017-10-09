@@ -1,0 +1,166 @@
+var checkUtil = {
+    
+    /**
+     * checkUtil.multi(rules, [allWrong=false])
+     * @param rules Array
+     *     example: [["checkEmpty", "share_desc","微信分享内容"], ["checkEmpty", "share_title", "微信分享标题"]]
+     * @param allWrong
+     *     return when error found if this param set to false [default]
+     *     else return an object contained all error
+    **/
+    checkShare:function() {
+        var title = $('#share_title');
+        var desc = $('#share_desc');
+        var zone = $('#share_zone_title');
+        var img = $('#input_share_imgurl');
+
+        var emptyT = $.trim(title.val()) == '';
+        var emptyD = $.trim(desc.val()) == '';
+        var emptyZ = $.trim(zone.val()) == '';
+        var emptyI = $.trim(img.val()) == '';
+        var result = false;
+        if( (emptyT && emptyD && emptyZ && emptyI) || !(emptyT || emptyD || emptyZ || emptyI))//全空或全填
+        {
+            warnUtil.setRight(title);
+            warnUtil.setRight(desc);
+            warnUtil.setRight(zone);
+            $('#share_img_error').html('');
+            result = true;
+        }
+        else
+        {
+            if(emptyT) {
+                warnUtil.setWrong(title,'分享给好友标题不能为空');
+            } else {
+                warnUtil.setRight(title);
+            } 
+            if(emptyD) {
+                warnUtil.setWrong(desc,'分享给好友内容不能为空');
+            } else {
+                warnUtil.setRight(desc);
+            } 
+            if(emptyZ) {
+                warnUtil.setWrong(zone,'分享到朋友圈标题不能为空');
+            } else {
+                warnUtil.setRight(zone);
+            }
+            if(emptyI) {
+                $('#share_img_error').html('请上传分享图片');
+            } else {
+                $('#share_img_error').html('');
+            }
+        }
+        return result;
+    },
+    multi: function(rules, allWrong)
+    {
+        if (typeof allWrong == "undefined") {
+            allWrong = false;
+        }
+        
+        var rule, methodName, method, ret, retArr = new Array;
+        for (var i = 0; i < rules.length; i++) {
+            rule = rules[i];
+            
+            methodName = rule.shift();
+            method = this[methodName];
+            ret = method.apply(this, rule)
+            if (!ret && !allWrong)
+            {
+                return false;
+            }
+            else
+            {
+                retArr.push(ret);
+            }
+        }
+        return allWrong ? retArr : true;
+    },
+    
+    checkEmpty:function(name, label, obj2) {
+        if (typeof name == "string") {
+            var obj1 = $(':input[name="'+name+'"]');
+        } else {
+            var obj1 = name;
+        }
+        var obj = obj2 ? obj2 : obj1;
+        var value = obj1.val();
+        if($.trim(value)=='')
+        {
+            warnUtil.setWrong(obj, label+'不能为空');
+            return false;
+        }
+        warnUtil.setRight(obj);
+        return true;
+    },
+    checkRadio:function(name, label) {
+        if (typeof name == "string") {
+            var obj = $(':input[name="'+name+'"]');
+        } else {
+            var obj = name;
+        }
+        var result = false;
+        warnUtil.setInit(obj);
+        obj.each(function(i) {
+            if(this.checked == true)
+            {
+                result = true;
+                return;
+            }
+        }); 
+        if(result == true) {
+            warnUtil.setRight(obj);
+            return true;
+        } else {
+            warnUtil.setWrong(obj, '请选择'+label);
+            return false;
+        }     
+    },
+    checkBox:function(name,label) {
+        var result = false;
+        var obj = $(':input[name^='+name+']');
+        warnUtil.setInit(obj);
+        obj.each(function(i) {
+            if(this.checked == true) {
+                result = true;
+                return;
+            }
+        }); 
+        if(result == true) {
+            warnUtil.setRight(obj);
+            return true;
+        } else {
+            warnUtil.setWrong(obj, '请选择'+label);
+            return false;
+        }     
+    },
+    checkEmail:function(name) {
+        var obj = $(':input[name='+name+']');
+        var email = obj.val();
+        if($.trim(email)=='') {
+            warnUtil.setWrong(obj,'邮箱不能为空');
+            return false;
+        }
+        if(!this._isEmail(email)) {
+            warnUtil.setWrong(obj,'邮箱格式错误');
+            return false;
+        }
+        warnUtil.setRight(obj);
+        return true;
+    },
+    charLength:function(str) {
+        var realLength = 0, len = str.length, charCode = -1;
+        for (var i = 0; i < len; i++) {
+            charCode = str.charCodeAt(i);
+            if (charCode >= 0 && charCode <= 128) realLength += 1;
+            else realLength += 2;
+        }
+        return realLength;
+    },
+     _isEmail:function(str){
+        var ename = str.split('@').shift(),
+        fisrtCharPattern = lastCharPattern = /[a-zA-Z0-9]/ ,
+        pattern = /^([a-zA-Z0-9-_.]){2,64}@[a-zA-Z0-9]([a-zA-Z0-9-.]){1,}(\.(com|cn|net|org|info|edu|mil|gov|biz|us|tv|cc)){1}$/i ;
+        return (str.length <= 50 && pattern.test(str) && fisrtCharPattern.test(ename.substr(0, 1)) && lastCharPattern.test(ename.substr(ename.length-1, 1))) ? true : false;
+    },
+}
