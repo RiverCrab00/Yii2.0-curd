@@ -51,12 +51,7 @@ class FoundController extends Controller{
 			return $this->renderPartial('detail',['data'=>$data]);
 		}else if($request->isPost){
 			$data=$request->post();
-			//dd($data);
 			$found=new Found;
-			//遍历$data,字段名要和表单一致
-			/*foreach ($data as $key => $value) {
-				$found->$key=$value;
-			}*/
 			$id=$data['id'];
 			$found=Found::findOne($id);
 			$found->type=$data['type'];
